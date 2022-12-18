@@ -6,6 +6,7 @@ export OPENSSL_STATIC=1
 ARCH_TYPE ?= $(shell uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')
 
 CHRONICLE_BUILDER_IMAGE ?= blockchaintp/chronicle-builder-$(ARCH_TYPE)
+CHRONICLE_TP_IMAGE ?= blockchaintp/chronicle-tp-$(ARCH_TYPE)
 CHRONICLE_VERSION ?= BTP2.1.0-0.4.0
 
 export DOCKER_BUILDKIT=1
@@ -135,12 +136,34 @@ stop-stl-$(1): $(MARKERS)/$(1)-stl
 	export CHRONICLE_IMAGE=chronicle-$(1)-stl; \
 	$(DOCKER_COMPOSE) -f docker/stl-domain.yaml down
 
+
+PHONY: build-end-to-end-test
+build-end-to-end-test:
+	docker build -t chronicle-test:$(ISOLATION_ID) -f docker/chronicle-test/chronicle-test.dockerfile .
+
+.ONESHELL:
+SHELL = /bin/bash
+.SHELLOPTS = $(if $(SHELLOPTS),$(SHELLOPTS):)pipefail:errexit
+.PHONY: test-e2e-$(1)
+test-e2e-$(1): $(MARKERS)/$(1)-stl-release build-end-to-end-test
+	$(MAKE) run-stl-$(1)
+	function stopStack {
+		docker logs docker-chronicle-sawtooth-tp-1
+		docker logs docker-chronicle-sawtooth-api-1
+		docker logs docker-validator-1
+		docker-compose -f docker/chronicle.yaml down || true
+	}
+	trap stopStack EXIT
+	docker run --network docker_default chronicle-test:$(ISOLATION_ID)
+
+
 .PHONY: clean-images-$(1)
 clean-images-$(1): $(MARKERS)
 	docker rmi chronicle-$(1)-inmem:$(ISOLATION_ID) || true
 	docker rmi chronicle-$(1)-inmem-release:$(ISOLATION_ID) || true
 	docker rmi chronicle-$(1)-stl:$(ISOLATION_ID) || true
 	docker rmi chronicle-$(1)-stl-release:$(ISOLATION_ID) || true
+	docker rmi chronicle-test$(ISOLATION_ID) || true
 	rm -f $(MARKERS)/*-$(1)
 
 clean-$(1): clean-images-$(1) clean-graphql-$(1)

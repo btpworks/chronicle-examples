@@ -34,8 +34,8 @@ services:
             /etc/sawtooth/keys/validator.priv -o config-genesis.batch
           sawset proposal create -k /etc/sawtooth/keys/validator.priv \
             sawtooth.consensus.min_wait_time=0 \
-            sawtooth.consensus.algorithm.name=devmode \
-            sawtooth.consensus.algorithm.version=1.0 \
+            sawtooth.consensus.algorithm.name=Devmode \
+            sawtooth.consensus.algorithm.version=0.1 \
             sawtooth.consensus.max_wait_time=0 -o consensus-settings.batch
           sawadm genesis config-genesis.batch consensus-settings.batch
         fi
@@ -67,7 +67,7 @@ services:
     environment: &rustenv
       - RUST_BACKTRACE=full
       - RUST_LOG=debug
-    image: blockchaintp/chronicle-tp:BTP2.1.0
+    image: ${CHRONICLE_TP_IMAGE}:${CHRONICLE_VERSION}
     entrypoint: /bin/bash
     command:
       - -xc
@@ -81,7 +81,7 @@ services:
 
   domain:
     environment: *rustenv
-    image: &chronicleImage ${CHRONICLE_IMAGE}:${ISOLATION_ID:-local}
+    image: &chronicleImage ${CHRONICLE_IMAGE}:${CHRONICLE_VERSION}
     entrypoint: |
       /usr/local/bin/chronicle
         -c /root/.chronicle/config.toml
