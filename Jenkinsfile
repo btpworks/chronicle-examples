@@ -29,13 +29,16 @@ pipeline {
 
     stage('Build') {
       steps {
+        sh '''
+          make clean build
+        '''
       }
     }
 
     stage('Test') {
       steps {
         sh '''
-          make test-e2e
+          make test
         '''
         step([$class: "TapPublisher", testResults: "build/results.tap"])
       }
@@ -45,20 +48,44 @@ pipeline {
 
     stage('Package') {
       steps {
+        sh '''
+          make package
+        '''
       }
     }
 
     stage("Analyze") {
       steps {
+        withCredentials([string(credentialsId: 'fossa.full.token', variable: 'FOSSA_API_KEY')]) {
+          withSonarQubeEnv('sonarcloud') {
+            sh '''
+              make analyze
+            '''
+          }
+        }
       }
     }
 
     stage('Create Archives') {
       steps {
+        sh '''
+          make archive
+        '''
       }
     }
 
     stage("Publish") {
+      when {
+        expression { env.BRANCH_NAME == "main" }
+      }
+      steps {
+        withCredentials([string(credentialsId: 'btp-build-github-pat',
+                                variable: 'GITHUB_TOKEN')]) {
+          sh '''
+            make publish
+          '''
+        }
+      }
     }
   }
 

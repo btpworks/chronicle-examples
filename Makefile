@@ -138,23 +138,30 @@ stop-stl-$(1): $(MARKERS)/$(1)-stl
 
 
 PHONY: build-end-to-end-test
+
+PHONY: build-end-to-end-test
 build-end-to-end-test:
 	docker build -t chronicle-test:$(ISOLATION_ID) -f docker/chronicle-test/chronicle-test.dockerfile .
 
-.ONESHELL:
-SHELL = /bin/bash
-.SHELLOPTS = $(if $(SHELLOPTS),$(SHELLOPTS):)pipefail:errexit
-.PHONY: test-e2e-$(1)
-test-e2e-$(1): $(MARKERS)/$(1)-stl-release build-end-to-end-test
-	$(MAKE) run-stl-$(1)
-	function stopStack {
-		docker logs docker-chronicle-sawtooth-tp-1
-		docker logs docker-chronicle-sawtooth-api-1
-		docker logs docker-validator-1
-		docker-compose -f docker/chronicle.yaml down || true
-	}
-	trap stopStack EXIT
-	docker run --network docker_default chronicle-test:$(ISOLATION_ID)
+.PHONY: test-e2e
+test-e2e: build-end-to-end-test
+	COMPOSE_PROFILES=test CHRONICLE_IMAGE=chronicle-evidence-stl CHRONICLE_VERSION=$(ISOLATION_ID) \
+	 $(COMPOSE) -f docker/chronicle.yaml up --exit-code-from chronicle-test
+
+.phony: test
+test: test-e2e
+
+.phony: build
+build: evidence-stl
+
+.phony: package
+package:
+
+.phony: analyze
+analyze:
+
+.phony: publish
+publish:
 
 
 .PHONY: clean-images-$(1)
