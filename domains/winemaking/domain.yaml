@@ -1,0 +1,191 @@
+name: "winemaking"
+roles:
+  - VIGNERON
+  - BREWER
+  - VINTNER
+  - TECHNICIAN
+agents:
+  Vintner:
+    attributes:
+      - Location
+      - Experience
+  Brewer:
+    attributes:
+      - Location
+      - Experience
+  Vigneron:
+    attributes:
+      - Location
+      - Experience
+  Technician:
+    attributes:
+      - Location
+entities:
+  Grapes:
+    attributes:
+      - Quality
+      - Location
+      - SubLocation
+      - ClimateData
+      - VineAge
+      - Varietal
+      - Brix
+      - TannicAcid
+      - Acidity
+  Must:
+    attributes:
+      - Quality
+      - PomaceTime
+      - Brix
+      - TannicAcid
+      - Acidity
+  Wine:
+    attributes:
+      - Quality
+      - Abv
+      - Taste
+      - Aroma
+  Certificate:
+    attributes:
+      - CertificateID
+activities:
+  Harvest:
+    attributes:
+      - Temperature
+      - Weather
+      - Manual
+      - Organic
+      - Location
+      - SubLocation
+  Pressing:
+    attributes:
+      - TimeSinceHarvest
+      - Extraction
+  Tasting:
+    attributes:
+      - Flavours
+      - Grading
+  Brewing:
+    attributes:
+      - Yeast
+      - PrimaryTemp
+      - FirstRuns
+      - Additives
+      - OriginalGravity
+      - FinalGravity
+      - Abv
+      - SecondaryFermentation
+      - ColdStabilization
+      - Fining
+      - Preservatives
+  Testing:
+    attributes:
+      - Brix
+      - TannicAcid
+      - Sulphur
+  Barreling:
+    attributes:
+      - BarrelType
+      - BarrelOrigin
+      - BarrelUse
+      - KnownBacteria
+  Blending:
+    attributes:
+      - Blend
+      - BlendRatio
+  Bottling:
+    attributes:
+      - Preservatives
+      - Cork
+      - Label
+      - Bottle
+      - Aoc
+attributes:
+  Location:
+    type: String
+  SubLocation:
+    type: String
+  Experience:
+    type: String
+  Quality:
+    type: String
+  ClimateData:
+    type: String
+  VineAge:
+    type: Int
+  Varietal:
+    type: String
+  Brix:
+    type: Int
+  TannicAcid:
+    type: Int
+  Acidity:
+    type: Int
+  Sulphur:
+    type: Int
+  PomaceTime:
+    type: Int
+  Abv:
+    type: Int
+  Taste:
+    type: String
+  Aroma:
+    type: String
+  CertificateID:
+    type: String
+  Temperature:
+    type: Int
+  Weather:
+    type: String
+  Manual:
+    type: Bool
+  Organic:
+    type: Bool
+  TimeSinceHarvest:
+    type: String
+  Extraction:
+    type: String
+  Flavours:
+    type: String
+  Grading:
+    type: String
+  Yeast:
+    type: String
+  PrimaryTemp:
+    type: Int
+  FirstRuns:
+    type: String
+  Additives:
+    type: String
+  OriginalGravity:
+    type: Int
+  FinalGravity:
+    type: Int
+  SecondaryFermentation:
+    type: String
+  ColdStabilization:
+    type: String
+  Fining:
+    type: String
+  Preservatives:
+    type: String
+  BarrelType:
+    type: String
+  BarrelOrigin:
+    type: String
+  BarrelUse:
+    type: Int
+  KnownBacteria:
+    type: String
+  Blend:
+    type: String
+  BlendRatio:
+    type: String
+  Cork:
+    type: Bool
+  Label:
+    type: String
+  Bottle:
+    type: String
+  Aoc:
+    type: String
