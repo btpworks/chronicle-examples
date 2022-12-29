@@ -79,6 +79,15 @@ services:
       - validator
     volumes: *rngVolumes
 
+  chronicle-pg:
+    environment:
+      - POSTGRES_DB=chronicle
+      - POSTGRES_USER=chronicle
+      - POSTGRES_PASSWORD=chronicle
+    image: postgres:13.9-alpine
+    ports:
+      - "5432:5432"
+
   domain:
     environment: *rustenv
     image: &chronicleImage ${CHRONICLE_IMAGE}:${CHRONICLE_VERSION}

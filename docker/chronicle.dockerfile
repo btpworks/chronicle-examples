@@ -29,7 +29,8 @@ FROM ubuntu:focal AS domain
 
 RUN apt-get update && \
   apt-get install -y \
-  libpq-dev
+  libpq-dev \
+  ca-certificates
 
 COPY --from=builder --chown=root:bin /usr/local/bin/chronicle /usr/local/bin
 COPY --chown=root:bin entrypoint /entrypoint
