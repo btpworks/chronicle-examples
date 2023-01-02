@@ -34,8 +34,14 @@ RUN apt-get update && \
 
 COPY --from=builder --chown=root:bin /usr/local/bin/chronicle /usr/local/bin
 COPY --chown=root:bin entrypoint /entrypoint
+
 RUN chmod 755 \
-  /entrypoint \
-  /usr/local/bin/chronicle
+    /entrypoint \
+    /usr/local/bin/chronicle
+
+RUN groupadd -g 999 chronicle && \
+    useradd -m -r -u 999 -g chronicle chronicle
+
+USER chronicle
 
 ENTRYPOINT [ "/entrypoint" ]
