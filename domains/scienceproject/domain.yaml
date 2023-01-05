@@ -1,0 +1,69 @@
+name: "scienceproject"
+agents:
+  Student:
+    attributes:
+      - StudentID
+      - Grade
+  Professor:
+    attributes:
+      - StaffID
+      - Department
+entities:
+  Experiment:
+    attributes:
+      - Reaction
+      - Reagents
+      - Approval
+  Results:
+    attributes:
+      - RawData
+      - ReportURL
+      - Purity
+      - Yield
+  Marks:
+    attributes:
+      - Grade
+      - Marks
+      - FeedbackURL
+activities:
+  Labwork:
+    attributes:
+      - StudentID
+      - Workplan
+      - Approval
+  Assessment:
+    attributes:
+      - StaffID
+      - ReportURL
+roles:
+  - STUDENT
+  - PROFESSOR
+attributes:
+  StudentID:
+    type: "String"
+  Grade:
+    type: "String"
+  StaffID:
+    type: "String"
+  Department:
+    type: "String"
+  Reaction:
+    type: "String"
+  Reagents:
+    type: "String"
+  Approval:
+    type: "String"
+  RawData:
+    type: "String"
+  ReportURL:
+    type: "String"
+  Purity:
+    type: "String"
+  Yield:
+    type: "String"
+  Marks:
+    type: "String"
+  FeedbackURL:
+    type: "String"
+  Workplan:
+    type: "String"
