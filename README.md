@@ -21,8 +21,9 @@ a good starting point is [Introduction to GraphQL](https://graphql.org/learn/).
 git clone https://github.com/btpworks/chronicle-examples.git
 ```
 
-This contains several example domain yaml files and docker and uses
-`blockchaintp/chronicle-builder:BTP2.1.0-0.5.0` as the builder image by default.
+This contains several example domain yaml files, and Docker uses
+`blockchaintp/chronicle-builder:BTP2.1.0-0.5.0` as the builder image by default
+
 
 ## Build a Domain
 
