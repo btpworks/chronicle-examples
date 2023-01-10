@@ -148,9 +148,6 @@ test-e2e: build-end-to-end-test
 	COMPOSE_PROFILES=test CHRONICLE_IMAGE=chronicle-evidence-stl CHRONICLE_VERSION=$(ISOLATION_ID) \
 	 $(COMPOSE) -f docker/chronicle.yaml up --exit-code-from chronicle-test
 
-.phony: test
-test: test-e2e
-
 .phony: build
 build: evidence-stl
 
