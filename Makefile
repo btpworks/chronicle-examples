@@ -6,7 +6,8 @@ export OPENSSL_STATIC=1
 ARCH_TYPE ?= $(shell uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')
 
 CHRONICLE_BUILDER_IMAGE ?= blockchaintp/chronicle-builder-$(ARCH_TYPE)
-CHRONICLE_VERSION ?= BTP2.1.0-0.4.0
+CHRONICLE_TP_IMAGE ?= blockchaintp/chronicle-tp-$(ARCH_TYPE)
+CHRONICLE_VERSION ?= BTP2.1.0-0.5.0
 
 export DOCKER_BUILDKIT=1
 export COMPOSE_DOCKER_CLI_BUILD=1
@@ -135,12 +136,38 @@ stop-stl-$(1): $(MARKERS)/$(1)-stl
 	export CHRONICLE_IMAGE=chronicle-$(1)-stl; \
 	$(DOCKER_COMPOSE) -f docker/stl-domain.yaml down
 
+
+PHONY: build-end-to-end-test
+
+PHONY: build-end-to-end-test
+build-end-to-end-test:
+	docker build -t chronicle-test:$(ISOLATION_ID) -f docker/chronicle-test/chronicle-test.dockerfile .
+
+.PHONY: test-e2e
+test-e2e: build-end-to-end-test
+	COMPOSE_PROFILES=test CHRONICLE_IMAGE=chronicle-evidence-stl CHRONICLE_VERSION=$(ISOLATION_ID) \
+	 $(COMPOSE) -f docker/chronicle.yaml up --exit-code-from chronicle-test
+
+.phony: build
+build: evidence-stl
+
+.phony: package
+package:
+
+.phony: analyze
+analyze:
+
+.phony: publish
+publish:
+
+
 .PHONY: clean-images-$(1)
 clean-images-$(1): $(MARKERS)
 	docker rmi chronicle-$(1)-inmem:$(ISOLATION_ID) || true
 	docker rmi chronicle-$(1)-inmem-release:$(ISOLATION_ID) || true
 	docker rmi chronicle-$(1)-stl:$(ISOLATION_ID) || true
 	docker rmi chronicle-$(1)-stl-release:$(ISOLATION_ID) || true
+	docker rmi chronicle-test$(ISOLATION_ID) || true
 	rm -f $(MARKERS)/*-$(1)
 
 clean-$(1): clean-images-$(1) clean-graphql-$(1)
@@ -150,3 +177,5 @@ clean: clean-$(1)
 endef
 
 $(foreach domain,$(DOMAINS),$(eval $(call domain_tmpl,$(domain))))
+
+

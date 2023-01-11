@@ -34,8 +34,8 @@ services:
             /etc/sawtooth/keys/validator.priv -o config-genesis.batch
           sawset proposal create -k /etc/sawtooth/keys/validator.priv \
             sawtooth.consensus.min_wait_time=0 \
-            sawtooth.consensus.algorithm.name=devmode \
-            sawtooth.consensus.algorithm.version=1.0 \
+            sawtooth.consensus.algorithm.name=Devmode \
+            sawtooth.consensus.algorithm.version=0.1 \
             sawtooth.consensus.max_wait_time=0 -o consensus-settings.batch
           sawadm genesis config-genesis.batch consensus-settings.batch
         fi
@@ -67,7 +67,7 @@ services:
     environment: &rustenv
       - RUST_BACKTRACE=full
       - RUST_LOG=debug
-    image: blockchaintp/chronicle-tp:BTP2.1.0
+    image: ${CHRONICLE_TP_IMAGE}:${CHRONICLE_VERSION}
     entrypoint: /bin/bash
     command:
       - -xc
@@ -79,9 +79,18 @@ services:
       - validator
     volumes: *rngVolumes
 
+  chronicle-pg:
+    environment:
+      - POSTGRES_DB=chronicle
+      - POSTGRES_USER=chronicle
+      - POSTGRES_PASSWORD=chronicle
+    image: postgres:13.9-alpine
+    ports:
+      - "5432:5432"
+
   domain:
     environment: *rustenv
-    image: &chronicleImage ${CHRONICLE_IMAGE}:${ISOLATION_ID:-local}
+    image: &chronicleImage ${CHRONICLE_IMAGE}:${CHRONICLE_VERSION}
     entrypoint: |
       /usr/local/bin/chronicle
         -c /root/.chronicle/config.toml
@@ -121,3 +130,9 @@ services:
       - "16686:16686"
       - "14268:14268"
       - "9411:9411"
+
+chronicle-test:
+  image: chronicle-test:${ISOLATION_ID}
+  profiles: ["test"]
+  depends_on:
+    - chronicle-sawtooth-api
