@@ -1,7 +1,6 @@
 # BTP Local
 target
 markers
-build
 site
 out
 docs
